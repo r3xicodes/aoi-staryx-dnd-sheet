@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aoi Staryx — D&D 5e Character Sheet</title>
+<style>
+  :root {
+    --paper: #f7f2e9;
+    --ink: #1c1a18;
+    --mute: #5c574f;
+    --line: #c9bfae;
+    --hdr: #e7dcc9;
+    --panel: #fbf8f1;
+    --accent: #0e7ea8;
+    --accent-2: #09a77a;
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    text-align: center;
+    padding: 1rem;
+    background: var(--hdr);
+    border-bottom: 2px solid var(--line);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+  }
+  .sheet {
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: auto;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+  .panel h2 {
+    font-size: 1rem;
+    background: var(--hdr);
+    margin: -0.75rem -0.75rem 0.5rem -0.75rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .abilities .score {
+    border: 2px solid var(--line);
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    margin: 1rem auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: bold;
+  }
+  .spells table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .spells th, .spells td {
+    border: 1px solid var(--line);
+    padding: 0.25rem 0.5rem;
+    text-align: left;
+  }
+  .monster {
+    background: #fff;
+    border: 2px solid var(--accent);
+    padding: 0.5rem;
+    border-radius: 6px;
+  }
+  .monster h3 {
+    margin: 0;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Aoi Staryx — Level 5 Ranger (Beast Master)</h1>
+  <p>Wood Elf (Starlit Elf) · Neutral Good · Background: Urchin (Orphan)</p>
+</header>
+<div class="sheet">
+
+  <!-- Left Column -->
+  <div class="panel abilities">
+    <h2>Ability Scores</h2>
+    <div class="score">STR<br>10</div>
+    <div class="score">DEX<br>18</div>
+    <div class="score">CON<br>14</div>
+    <div class="score">INT<br>10</div>
+    <div class="score">WIS<br>17</div>
+    <div class="score">CHA<br>12</div>
+  </div>
+
+  <!-- Middle Column -->
+  <div>
+    <div class="panel">
+      <h2>Combat</h2>
+      <p><b>Armor Class:</b> 16<br>
+      <b>HP:</b> 40 (5d10 Hit Dice)<br>
+      <b>Speed:</b> 35 ft<br>
+      <b>Initiative:</b> +4<br>
+      <b>Proficiency Bonus:</b> +3<br>
+      <b>Death Saves:</b> [ ] [ ] [ ]</p>
+    </div>
+    <div class="panel">
+      <h2>Attacks & Weapons</h2>
+      <ul>
+        <li>Longbow +7 (1d8+4 piercing)</li>
+        <li>Shortsword +7 (1d6+4 slashing)</li>
+        <li>Unarmed Strike +4 (1d4)</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>Features & Traits</h2>
+      <p>Fey Ancestry, Keen Senses, Trance, Fleet of Foot, Mask of the Wild.<br>
+      Favored Foe, Natural Explorer, Primeval Awareness, Extra Attack.<br>
+      Beast Companion: Mr. Blobby.</p>
+    </div>
+    <div class="panel">
+      <h2>Equipment & Proficiencies</h2>
+      <p><b>Equipment:</b> Explorer’s Pack, Longbow, Shortswords (2), Leather Armor.<br>
+      <b>Proficiencies:</b> Light/Medium armor, Shields, Simple & Martial Weapons.<br>
+      <b>Tools:</b> Cook’s Utensils, Thieves’ Tools.<br>
+      <b>Languages:</b> Common, Elvish, Sylvan.</p>
+    </div>
+  </div>
+
+  <!-- Right Column -->
+  <div>
+    <div class="panel spells">
+      <h2>Spellcasting</h2>
+      <p><b>Spellcasting Ability:</b> WIS<br>
+      <b>Save DC:</b> 14 · <b>Attack Bonus:</b> +6<br>
+      <b>Slots:</b> 1st (4), 2nd (2)</p>
+      <table>
+        <tr><th>Spell</th><th>Level</th></tr>
+        <tr><td>Hunter's Mark</td><td>1st</td></tr>
+        <tr><td>Goodberry</td><td>1st</td></tr>
+        <tr><td>Cure Wounds</td><td>1st</td></tr>
+        <tr><td>Pass without Trace</td><td>2nd</td></tr>
+        <tr><td>Lesser Restoration</td><td>2nd</td></tr>
+        <tr><td>Misty Step</td><td>2nd</td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <h2>Personality</h2>
+      <p><b>Traits:</b> Curious, caring, glow reacts to emotions.<br>
+      <b>Ideals:</b> Everyone deserves kindness and a safe home.<br>
+      <b>Bonds:</b> Mr. Blobby is her first real friend.<br>
+      <b>Flaws:</b> Her glow sometimes gives her away.</p>
+    </div>
+    <div class="panel">
+      <h2>Backstory</h2>
+      <p>An orphaned starlit elf child with glowing hair and turquoise markings. Feared by townsfolk, but loved by animals. She became a Tamer, traveling with her astral beast companion Mr. Blobby.</p>
+    </div>
+    <div class="panel monster">
+      <h3>Mr. Blobby (Beast Companion)</h3>
+      <p><b>Small Beast, Neutral</b><br>
+      AC 12 | HP 13 (2d8+4)<br>
+      Speed 40 ft, climb 40 ft<br>
+      Skills: Stealth +6, Perception +4<br>
+      <i>Keen Smell.</i> Advantage on Perception checks relying on smell.<br>
+      <b>Attack:</b> Slam +4 to hit, reach 5 ft, 1d6+2 bludgeoning.<br>
+      <b>Blob Form:</b> Can squeeze through 1-inch gaps.</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
