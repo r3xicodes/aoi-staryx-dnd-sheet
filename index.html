@@ -5,180 +5,615 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Aoi Staryx — D&D 5e Character Sheet</title>
 <style>
-  :root {
-    --paper: #f7f2e9;
-    --ink: #1c1a18;
-    --mute: #5c574f;
-    --line: #c9bfae;
-    --hdr: #e7dcc9;
-    --panel: #fbf8f1;
-    --accent: #0e7ea8;
-    --accent-2: #09a77a;
+  :root{
+    --paper:#f7f2e9;         /* parchment */
+    --ink:#1c1a18;           /* primary text */
+    --muted:#5c574f;         /* secondary text */
+    --rule:#c9bfae;          /* borders */
+    --hdr:#e7dcc9;           /* header band */
+    --panel:#fbf8f1;         /* panel bg */
+    --accent:#0e7ea8;        /* starlit blue */
+    --teal:#09a77a;          /* turquoise */
+    --warn:#b85b00;          /* warning */
+    --bad:#a70a0a;           /* danger */
+    --good:#0b7a2a;          /* success */
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --serif: 'Georgia', 'Iowan Old Style', 'Times New Roman', serif;
   }
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Georgia', serif;
-    margin: 0;
-    padding: 0;
-  }
-  header {
-    text-align: center;
-    padding: 1rem;
-    background: var(--hdr);
-    border-bottom: 2px solid var(--line);
-  }
-  header h1 {
-    margin: 0;
-    font-size: 1.8rem;
-  }
-  .sheet {
-    display: grid;
-    grid-template-columns: 200px 1fr 1fr;
-    gap: 1rem;
-    padding: 1rem;
-    max-width: 1200px;
-    margin: auto;
-  }
-  .panel {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    padding: 0.75rem;
-    border-radius: 8px;
-  }
-  .panel h2 {
-    font-size: 1rem;
-    background: var(--hdr);
-    margin: -0.75rem -0.75rem 0.5rem -0.75rem;
-    padding: 0.5rem;
-    border-bottom: 1px solid var(--line);
-  }
-  .abilities .score {
-    border: 2px solid var(--line);
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    margin: 1rem auto;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-size: 1.3rem;
-    font-weight: bold;
-  }
-  .spells table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .spells th, .spells td {
-    border: 1px solid var(--line);
-    padding: 0.25rem 0.5rem;
-    text-align: left;
-  }
-  .monster {
-    background: #fff;
-    border: 2px solid var(--accent);
-    padding: 0.5rem;
-    border-radius: 6px;
-  }
-  .monster h3 {
-    margin: 0;
-    color: var(--accent);
+  html,body{height:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 var(--serif)}
+  *{box-sizing:border-box}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:10;background:var(--hdr);border-bottom:2px solid var(--rule);padding:10px 14px}
+  header .row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  header h1{margin:0;font-size:1.6rem}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{background:var(--panel);border:1px solid var(--rule);padding:6px 10px;border-radius:999px;font-weight:600}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--rule);background:var(--panel);padding:8px 10px;border-radius:8px;font-weight:700;cursor:pointer}
+  .btn.primary{background:linear-gradient(180deg,#eadec9,#dacfb9);border-color:#bfaf93}
+
+  /* Page grid */
+  .page{max-width:1200px;margin:18px auto;padding:0 14px}
+  .sheet{display:grid;grid-template-columns:260px 1fr 1fr;gap:14px}
+
+  /* Panels */
+  .panel{background:var(--panel);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+  .panel .hd{background:var(--hdr);padding:8px 10px;border-bottom:1px solid var(--rule);font-weight:900;letter-spacing:.2px;text-transform:uppercase}
+  .panel .bd{padding:10px}
+
+  /* Inputs */
+  input[type="number"], input[type="text"], select, textarea{width:100%;padding:6px 8px;border:1px solid var(--rule);border-radius:6px;background:#fff;font:14px var(--serif)}
+  textarea{min-height:90px;resize:vertical}
+  .row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+
+  /* Ability strip */
+  .ability{display:grid;grid-template-columns:88px 1fr;gap:10px;align-items:center;margin-bottom:10px}
+  .score{width:88px;height:88px;border:2px solid var(--rule);border-radius:50%;display:grid;place-items:center;background:#fff;box-shadow:inset 0 0 0 6px #f1e9d9}
+  .score input{width:64px;text-align:center;font:700 22px var(--serif);border:0;background:transparent;outline:none}
+  .mod{font:700 20px var(--serif);color:var(--accent)}
+  .save-skill{font-family:var(--mono);display:grid;grid-template-columns: auto 1fr auto;gap:8px;align-items:center}
+  .save-skill + .save-skill{margin-top:6px}
+  .subtle{color:var(--muted);font-size:.9em}
+
+  /* Key-values */
+  .kv{display:grid;grid-template-columns: repeat(2,1fr);gap:8px}
+  .kv .cell{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:8px}
+  .kv .cell label{display:block;font-size:12px;color:var(--muted)}
+  .kv .cell .v{font-weight:700}
+
+  /* Attacks */
+  table{width:100%;border-collapse:collapse}
+  th, td{border:1px solid var(--rule);padding:6px 8px;text-align:left}
+  th{background:var(--hdr)}
+  .add-row{margin-top:8px}
+
+  /* Spells table */
+  .slotgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+  .slot{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:8px}
+  .slot label{font-size:12px;color:var(--muted);display:block}
+  .slot .pair{display:flex;gap:6px}
+
+  /* Monster card */
+  .monster .line{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .tag{display:inline-block;background:#fff;border:1px solid var(--rule);border-radius:999px;padding:2px 8px;margin-right:6px}
+
+  /* Footer */
+  footer{margin:24px auto 40px;max-width:1200px;color:var(--muted);text-align:center}
+
+  /* Print */
+  @media print{
+    header{position:static}
+    .btn,.actions{display:none}
+    body{font-size:12px}
+    .sheet{grid-template-columns:250px 1fr 1fr}
   }
 </style>
 </head>
 <body>
 <header>
-  <h1>Aoi Staryx — Level 5 Ranger (Beast Master)</h1>
-  <p>Wood Elf (Starlit Elf) · Neutral Good · Background: Urchin (Orphan)</p>
+  <div class="row">
+    <div style="grid-column:1 / -1;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <h1 style="flex:1 1 auto;margin-right:12px">Aoi Staryx — Level 5 Ranger (Beast Master)</h1>
+      <div class="chips">
+        <span class="chip">Wood Elf (Starlit Elf)</span>
+        <span class="chip">Neutral Good</span>
+        <span class="chip">Background: Urchin (Orphan)</span>
+      </div>
+      <div class="actions">
+        <button class="btn" id="exportBtn">Export JSON</button>
+        <label class="btn"><input type="file" id="importFile" accept="application/json" style="display:none">Import JSON</label>
+        <button class="btn primary" onclick="window.print()">Print / PDF</button>
+      </div>
+    </div>
+  </div>
 </header>
-<div class="sheet">
 
-  <!-- Left Column -->
-  <div class="panel abilities">
-    <h2>Ability Scores</h2>
-    <div class="score">STR<br>10</div>
-    <div class="score">DEX<br>18</div>
-    <div class="score">CON<br>14</div>
-    <div class="score">INT<br>10</div>
-    <div class="score">WIS<br>17</div>
-    <div class="score">CHA<br>12</div>
-  </div>
+<div class="page">
+  <section class="sheet" id="sheet">
+    <!-- Left: Abilities, Saves, Skills -->
+    <div>
+      <div class="panel">
+        <div class="hd">Ability Scores</div>
+        <div class="bd" id="abilities">
+          <!-- Each ability row -->
+          <div class="ability" data-ability="STR">
+            <div class="score"><input type="number" min="1" value="10"></div>
+            <div>
+              <div><strong>STR</strong> <span class="mod">+0</span></div>
+              <div class="save-skill"><input type="checkbox" class="save-prof"> <span>Saving Throw</span> <span class="save-val">+0</span></div>
+              <div class="subtle">Athletics <span class="skill-val" data-skill="Athletics">+0</span></div>
+            </div>
+          </div>
+          <div class="ability" data-ability="DEX">
+            <div class="score"><input type="number" min="1" value="18"></div>
+            <div>
+              <div><strong>DEX</strong> <span class="mod">+4</span></div>
+              <div class="save-skill"><input type="checkbox" class="save-prof" checked> <span>Saving Throw</span> <span class="save-val">+7</span></div>
+              <div class="subtle">Acrobatics <span class="skill-val" data-skill="Acrobatics">+4</span> · Sleight of Hand <span class="skill-val" data-skill="Sleight of Hand">+4</span> · Stealth <span class="skill-val" data-skill="Stealth">+4</span></div>
+            </div>
+          </div>
+          <div class="ability" data-ability="CON">
+            <div class="score"><input type="number" min="1" value="14"></div>
+            <div>
+              <div><strong>CON</strong> <span class="mod">+2</span></div>
+              <div class="save-skill"><input type="checkbox" class="save-prof"> <span>Saving Throw</span> <span class="save-val">+2</span></div>
+            </div>
+          </div>
+          <div class="ability" data-ability="INT">
+            <div class="score"><input type="number" min="1" value="10"></div>
+            <div>
+              <div><strong>INT</strong> <span class="mod">+0</span></div>
+              <div class="save-skill"><input type="checkbox" class="save-prof"> <span>Saving Throw</span> <span class="save-val">+0</span></div>
+              <div class="subtle">Arcana <span class="skill-val" data-skill="Arcana">+0</span> · History <span class="skill-val" data-skill="History">+0</span> · Investigation <span class="skill-val" data-skill="Investigation">+0</span> · Nature <span class="skill-val" data-skill="Nature">+0</span> · Religion <span class="skill-val" data-skill="Religion">+0</span></div>
+            </div>
+          </div>
+          <div class="ability" data-ability="WIS">
+            <div class="score"><input type="number" min="1" value="17"></div>
+            <div>
+              <div><strong>WIS</strong> <span class="mod">+3</span></div>
+              <div class="save-skill"><input type="checkbox" class="save-prof" checked> <span>Saving Throw</span> <span class="save-val">+6</span></div>
+              <div class="subtle">Animal Handling <span class="skill-val" data-skill="Animal Handling">+3</span> · Insight <span class="skill-val" data-skill="Insight">+3</span> · Medicine <span class="skill-val" data-skill="Medicine">+3</span> · Perception <span class="skill-val" data-skill="Perception">+3</span> · Survival <span class="skill-val" data-skill="Survival">+3</span></div>
+            </div>
+          </div>
+          <div class="ability" data-ability="CHA">
+            <div class="score"><input type="number" min="1" value="12"></div>
+            <div>
+              <div><strong>CHA</strong> <span class="mod">+1</span></div>
+              <div class="save-skill"><input type="checkbox" class="save-prof"> <span>Saving Throw</span> <span class="save-val">+1</span></div>
+              <div class="subtle">Deception <span class="skill-val" data-skill="Deception">+1</span> · Intimidation <span class="skill-val" data-skill="Intimidation">+1</span> · Performance <span class="skill-val" data-skill="Performance">+1</span> · Persuasion <span class="skill-val" data-skill="Persuasion">+1</span></div>
+            </div>
+          </div>
 
-  <!-- Middle Column -->
-  <div>
-    <div class="panel">
-      <h2>Combat</h2>
-      <p><b>Armor Class:</b> 16<br>
-      <b>HP:</b> 40 (5d10 Hit Dice)<br>
-      <b>Speed:</b> 35 ft<br>
-      <b>Initiative:</b> +4<br>
-      <b>Proficiency Bonus:</b> +3<br>
-      <b>Death Saves:</b> [ ] [ ] [ ]</p>
-    </div>
-    <div class="panel">
-      <h2>Attacks & Weapons</h2>
-      <ul>
-        <li>Longbow +7 (1d8+4 piercing)</li>
-        <li>Shortsword +7 (1d6+4 slashing)</li>
-        <li>Unarmed Strike +4 (1d4)</li>
-      </ul>
-    </div>
-    <div class="panel">
-      <h2>Features & Traits</h2>
-      <p>Fey Ancestry, Keen Senses, Trance, Fleet of Foot, Mask of the Wild.<br>
-      Favored Foe, Natural Explorer, Primeval Awareness, Extra Attack.<br>
-      Beast Companion: Mr. Blobby.</p>
-    </div>
-    <div class="panel">
-      <h2>Equipment & Proficiencies</h2>
-      <p><b>Equipment:</b> Explorer’s Pack, Longbow, Shortswords (2), Leather Armor.<br>
-      <b>Proficiencies:</b> Light/Medium armor, Shields, Simple & Martial Weapons.<br>
-      <b>Tools:</b> Cook’s Utensils, Thieves’ Tools.<br>
-      <b>Languages:</b> Common, Elvish, Sylvan.</p>
-    </div>
-  </div>
+          <div class="kv" style="margin-top:6px">
+            <div class="cell"><label>Proficiency Bonus</label><div class="v"><input id="prof" type="number" value="3"></div></div>
+            <div class="cell"><label>Passive Perception</label><div class="v" id="passive">16</div></div>
+            <div class="cell"><label>Inspiration</label><div class="v"><input id="insp" type="text" placeholder="—"></div></div>
+            <div class="cell"><label>Languages</label><div class="v"><input id="langs" type="text" value="Common, Elvish, Sylvan"></div></div>
+          </div>
+        </div>
+      </div>
 
-  <!-- Right Column -->
-  <div>
-    <div class="panel spells">
-      <h2>Spellcasting</h2>
-      <p><b>Spellcasting Ability:</b> WIS<br>
-      <b>Save DC:</b> 14 · <b>Attack Bonus:</b> +6<br>
-      <b>Slots:</b> 1st (4), 2nd (2)</p>
-      <table>
-        <tr><th>Spell</th><th>Level</th></tr>
-        <tr><td>Hunter's Mark</td><td>1st</td></tr>
-        <tr><td>Goodberry</td><td>1st</td></tr>
-        <tr><td>Cure Wounds</td><td>1st</td></tr>
-        <tr><td>Pass without Trace</td><td>2nd</td></tr>
-        <tr><td>Lesser Restoration</td><td>2nd</td></tr>
-        <tr><td>Misty Step</td><td>2nd</td></tr>
-      </table>
+      <div class="panel">
+        <div class="hd">Skills: Proficiencies</div>
+        <div class="bd" id="skills">
+          <!-- Proficiency checkboxes by skill -->
+          <div class="save-skill"><input type="checkbox" data-skill="Acrobatics"> Acrobatics (DEX) <span class="right" id="sk-Acrobatics">+4</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Animal Handling" checked> Animal Handling (WIS) <span class="right" id="sk-Animal Handling">+6</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Arcana"> Arcana (INT) <span class="right" id="sk-Arcana">+0</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Athletics"> Athletics (STR) <span class="right" id="sk-Athletics">+0</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Deception"> Deception (CHA) <span class="right" id="sk-Deception">+1</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="History"> History (INT) <span class="right" id="sk-History">+0</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Insight" checked> Insight (WIS) <span class="right" id="sk-Insight">+6</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Intimidation"> Intimidation (CHA) <span class="right" id="sk-Intimidation">+1</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Investigation"> Investigation (INT) <span class="right" id="sk-Investigation">+0</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Medicine"> Medicine (WIS) <span class="right" id="sk-Medicine">+3</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Nature"> Nature (INT) <span class="right" id="sk-Nature">+0</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Perception" checked> Perception (WIS) <span class="right" id="sk-Perception">+6</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Performance"> Performance (CHA) <span class="right" id="sk-Performance">+1</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Persuasion"> Persuasion (CHA) <span class="right" id="sk-Persuasion">+1</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Religion"> Religion (INT) <span class="right" id="sk-Religion">+0</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Sleight of Hand"> Sleight of Hand (DEX) <span class="right" id="sk-Sleight of Hand">+4</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Stealth" checked> Stealth (DEX) <span class="right" id="sk-Stealth">+7</span></div>
+          <div class="save-skill"><input type="checkbox" data-skill="Survival" checked> Survival (WIS) <span class="right" id="sk-Survival">+6</span></div>
+        </div>
+      </div>
     </div>
-    <div class="panel">
-      <h2>Personality</h2>
-      <p><b>Traits:</b> Curious, caring, glow reacts to emotions.<br>
-      <b>Ideals:</b> Everyone deserves kindness and a safe home.<br>
-      <b>Bonds:</b> Mr. Blobby is her first real friend.<br>
-      <b>Flaws:</b> Her glow sometimes gives her away.</p>
-    </div>
-    <div class="panel">
-      <h2>Backstory</h2>
-      <p>An orphaned starlit elf child with glowing hair and turquoise markings. Feared by townsfolk, but loved by animals. She became a Tamer, traveling with her astral beast companion Mr. Blobby.</p>
-    </div>
-    <div class="panel monster">
-      <h3>Mr. Blobby (Beast Companion)</h3>
-      <p><b>Small Beast, Neutral</b><br>
-      AC 12 | HP 13 (2d8+4)<br>
-      Speed 40 ft, climb 40 ft<br>
-      Skills: Stealth +6, Perception +4<br>
-      <i>Keen Smell.</i> Advantage on Perception checks relying on smell.<br>
-      <b>Attack:</b> Slam +4 to hit, reach 5 ft, 1d6+2 bludgeoning.<br>
-      <b>Blob Form:</b> Can squeeze through 1-inch gaps.</p>
-    </div>
-  </div>
 
+    <!-- Middle: Combat, Attacks, Features, Equipment -->
+    <div>
+      <div class="panel">
+        <div class="hd">Combat</div>
+        <div class="bd kv">
+          <div class="cell"><label>Armor Class</label><div class="v"><input id="ac" type="number" value="16"></div></div>
+          <div class="cell"><label>Initiative</label><div class="v" id="init">+4</div></div>
+          <div class="cell"><label>Speed</label><div class="v"><input id="speed" type="text" value="35 ft"></div></div>
+          <div class="cell"><label>Hit Points (Max)</label><div class="v"><input id="hpmax" type="number" value="40"></div></div>
+          <div class="cell"><label>Current HP</label><div class="v"><input id="hp" type="number" value="40"></div></div>
+          <div class="cell"><label>Temp HP</label><div class="v"><input id="thp" type="number" value=""></div></div>
+          <div class="cell"><label>Hit Dice</label><div class="v"><input id="hd" type="text" value="5d10"></div></div>
+          <div class="cell"><label>Death Saves</label><div class="v">
+            <span>Success:</span>
+            <label><input type="checkbox" class="ds-s"></label>
+            <label><input type="checkbox" class="ds-s"></label>
+            <label><input type="checkbox" class="ds-s"></label>
+            &nbsp;&nbsp; <span>Fail:</span>
+            <label><input type="checkbox" class="ds-f"></label>
+            <label><input type="checkbox" class="ds-f"></label>
+            <label><input type="checkbox" class="ds-f"></label>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="hd">Attacks & Weapons</div>
+        <div class="bd">
+          <table id="attacks">
+            <thead>
+              <tr><th>Name</th><th>Bonus</th><th>Damage/Type</th><th>Notes</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input value="Longbow"></td>
+                <td><input value="+7"></td>
+                <td><input value="1d8+4 piercing"></td>
+                <td><input value="Range 150/600, ammo"></td>
+                <td><button class="btn" onclick="delRow(this)">−</button></td>
+              </tr>
+              <tr>
+                <td><input value="Shortsword"></td>
+                <td><input value="+7"></td>
+                <td><input value="1d6+4 slashing"></td>
+                <td><input value="Finesse, light"></td>
+                <td><button class="btn" onclick="delRow(this)">−</button></td>
+              </tr>
+              <tr>
+                <td><input value="Unarmed"></td>
+                <td><input value="+4"></td>
+                <td><input value="1d4 bludgeoning"></td>
+                <td><input value=""></td>
+                <td><button class="btn" onclick="delRow(this)">−</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn add-row" onclick="addAttack()">+ Add Attack</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="hd">Features & Traits</div>
+        <div class="bd">
+          <textarea id="features">Fey Ancestry, Keen Senses, Trance, Fleet of Foot, Mask of the Wild.
+Favored Foe, Natural Explorer (Forest), Primeval Awareness, Extra Attack.
+Beast Master’s Companion: Mr. Blobby (astral slime; reskinned panther). Glowing hair + turquoise markings (dim light 5 ft).
+Special: Starlit Camouflage — advantage on Stealth in starlight/twilight.</textarea>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="hd">Equipment & Proficiencies</div>
+        <div class="bd">
+          <div class="row">
+            <div style="grid-column: span 6">
+              <label>Equipment</label>
+              <textarea id="equip">Explorer’s Pack, Studded Leather, Longbow (20 arrows), 2× Shortsword, Cook’s Utensils, Thieves’ Tools.</textarea>
+            </div>
+            <div style="grid-column: span 6">
+              <label>Proficiencies</label>
+              <textarea id="profs">Armor: Light, Medium, Shields.
+Weapons: Simple, Martial.
+Tools: Cook’s Utensils, Thieves’ Tools.</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Spellcasting, RP, Backstory, Companion -->
+    <div>
+      <div class="panel">
+        <div class="hd">Spellcasting</div>
+        <div class="bd">
+          <div class="row" style="margin-bottom:10px">
+            <div style="grid-column: span 3"><label>Spellcasting Ability</label>
+              <select id="spellAbility"><option>WIS</option><option>INT</option><option>CHA</option></select>
+            </div>
+            <div style="grid-column: span 3"><label>Save DC</label>
+              <input id="spellDC" type="number" value="14" readonly>
+            </div>
+            <div style="grid-column: span 3"><label>Spell Attack</label>
+              <input id="spellAtk" type="number" value="6" readonly>
+            </div>
+            <div style="grid-column: span 3"><label>Slots (1st/2nd)</label>
+              <input id="slotsSummary" type="text" value="1st: 4 / 4, 2nd: 2 / 2">
+            </div>
+          </div>
+
+          <div class="slotgrid">
+            <div class="slot"><label>Level 1 Slots</label>
+              <div class="pair"><input id="l1cur" type="number" value="4" min="0"><input id="l1max" type="number" value="4" min="0"></div></div>
+            <div class="slot"><label>Level 2 Slots</label>
+              <div class="pair"><input id="l2cur" type="number" value="2" min="0"><input id="l2max" type="number" value="2" min="0"></div></div>
+            <div class="slot"><label>Level 3 Slots</label>
+              <div class="pair"><input id="l3cur" type="number" value="0" min="0"><input id="l3max" type="number" value="0" min="0"></div></div>
+            <div class="slot"><label>Level 4 Slots</label>
+              <div class="pair"><input id="l4cur" type="number" value="0" min="0"><input id="l4max" type="number" value="0" min="0"></div></div>
+          </div>
+
+          <div class="panel" style="border:1px dashed var(--rule);margin-top:8px">
+            <div class="hd">Spells Known / Prepared</div>
+            <div class="bd">
+              <table id="spells">
+                <thead><tr><th>Name</th><th>Level</th><th>Notes</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><input value="Hunter's Mark"></td><td><input value="1"></td><td><input value="Bonus action, mark dmg"></td><td><button class="btn" onclick="delRow(this)">−</button></td></tr>
+                  <tr><td><input value="Goodberry"></td><td><input value="1"></td><td><input value="10 berries, heal"></td><td><button class="btn" onclick="delRow(this)">−</button></td></tr>
+                  <tr><td><input value="Cure Wounds"></td><td><input value="1"></td><td><input value="Touch healing"></td><td><button class="btn" onclick="delRow(this)">−</button></td></tr>
+                  <tr><td><input value="Pass without Trace"></td><td><input value="2"></td><td><input value="+10 Stealth aura"></td><td><button class="btn" onclick="delRow(this)">−</button></td></tr>
+                  <tr><td><input value="Lesser Restoration"></td><td><input value="2"></td><td><input value="End a disease/condition"></td><td><button class="btn" onclick="delRow(this)">−</button></td></tr>
+                  <tr><td><input value="Misty Step"></td><td><input value="2"></td><td><input value="Bonus action teleport"></td><td><button class="btn" onclick="delRow(this)">−</button></td></tr>
+                </tbody>
+              </table>
+              <button class="btn add-row" onclick="addSpell()">+ Add Spell</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="hd">Roleplay</div>
+        <div class="bd">
+          <div class="row">
+            <div style="grid-column: span 6">
+              <label>Personality</label>
+              <textarea id="personality">Curious, kind, wants to help; hair & markings glow with emotion.</textarea>
+            </div>
+            <div style="grid-column: span 6">
+              <label>Ideals</label>
+              <textarea id="ideals">Everyone deserves kindness and a safe home.</textarea>
+            </div>
+            <div style="grid-column: span 6">
+              <label>Bonds</label>
+              <textarea id="bonds">Mr. Blobby is her first real friend.</textarea>
+            </div>
+            <div style="grid-column: span 6">
+              <label>Flaws</label>
+              <textarea id="flaws">Glow sometimes gives her away while hiding.</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="hd">Backstory</div>
+        <div class="bd">
+          <textarea id="backstory">An orphaned starlit elf child with glowing hair and neon-turquoise markings. Feared by townsfolk, loved by beasts; became a Tamer with her astral companion Mr. Blobby.</textarea>
+        </div>
+      </div>
+
+      <div class="panel monster">
+        <div class="hd">Companion — Mr. Blobby (reskinned Panther)</div>
+        <div class="bd">
+          <div class="line" style="margin-bottom:8px">
+            <div class="kv cell"><label>AC</label><div class="v"><input id="pet-ac" type="number" value="13"></div></div>
+            <div class="kv cell"><label>HP</label><div class="v"><input id="pet-hp" type="number" value="19"></div></div>
+            <div class="kv cell"><label>Speed</label><div class="v"><input id="pet-speed" type="text" value="40 ft., climb 40 ft."></div></div>
+            <div class="kv cell"><label>Skills</label><div class="v"><input id="pet-skills" type="text" value="Stealth +6, Perception +4"></div></div>
+          </div>
+          <div class="row">
+            <div style="grid-column: span 6">
+              <label>Traits</label>
+              <textarea id="pet-traits">Keen Smell; Pounce (DC 12). Reflavored as sticky engulf.</textarea>
+            </div>
+            <div style="grid-column: span 6">
+              <label>Attack</label>
+              <textarea id="pet-attack">Slam (bite) +4 to hit, reach 5 ft., 1d6+2 bludgeoning (slashing).</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
+
+<footer>
+  Aoi Staryx © You • Built for GitHub Pages. This sheet stores to your browser automatically (no server).
+</footer>
+
+<script>
+  // --- Helpers ---
+  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+  const mod = s => Math.floor((Number(s||0)-10)/2);
+
+  // Map skills to abilities
+  const SKILL_MAP = {
+    'Acrobatics':'DEX','Animal Handling':'WIS','Arcana':'INT','Athletics':'STR','Deception':'CHA','History':'INT','Insight':'WIS','Intimidation':'CHA','Investigation':'INT','Medicine':'WIS','Nature':'INT','Perception':'WIS','Performance':'CHA','Persuasion':'CHA','Religion':'INT','Sleight of Hand':'DEX','Stealth':'DEX','Survival':'WIS'
+  };
+
+  function updateAll(){
+    const prof = Number(document.getElementById('prof').value||0);
+
+    // Update abilities, saves, initiative, passive
+    document.querySelectorAll('#abilities .ability').forEach(box=>{
+      const ab = box.dataset.ability;
+      const scoreInput = box.querySelector('.score input');
+      const score = Number(scoreInput.value||0);
+      const m = mod(score);
+      box.querySelector('.mod').textContent = (m>=0?'+':'')+m;
+      // save
+      const saveProf = box.querySelector('.save-prof').checked;
+      const saveVal = m + (saveProf?prof:0);
+      box.querySelector('.save-val').textContent = (saveVal>=0?'+':'')+saveVal;
+    });
+
+    // Initiative = Dex mod
+    const dex = Number(document.querySelector('[data-ability="DEX"] .score input').value||0);
+    const init = mod(dex);
+    document.getElementById('init').textContent = (init>=0?'+':'')+init;
+
+    // Passive Perception = 10 + Wis mod + prof if Perception proficient
+    const wis = Number(document.querySelector('[data-ability="WIS"] .score input').value||0);
+    const wisMod = mod(wis);
+    const percProf = document.querySelector('#skills input[data-skill="Perception"]').checked;
+    const passive = 10 + wisMod + (percProf?prof:0);
+    document.getElementById('passive').textContent = passive;
+
+    // Skills sheet values
+    for (const [skill, ability] of Object.entries(SKILL_MAP)){
+      const abScore = Number(document.querySelector(`[data-ability="${ability}"] .score input`).value||0);
+      const base = mod(abScore);
+      const p = document.querySelector(`#skills input[data-skill="${skill}"]`).checked ? prof : 0;
+      const total = base + p;
+      const cell = document.getElementById(`sk-${skill}`);
+      if(cell) cell.textContent = (total>=0?'+':'')+total;
+      // Inline badges under abilities if present
+      document.querySelectorAll(`.skill-val[data-skill="${skill}"]`).forEach(span=> span.textContent = (total>=0?'+':'')+total);
+    }
+
+    // Spell DC / Attack
+    const ability = document.getElementById('spellAbility').value;
+    const abilityMod = mod(Number(document.querySelector(`[data-ability="${ability}"] .score input`).value||0));
+    document.getElementById('spellDC').value = 8 + prof + abilityMod;
+    document.getElementById('spellAtk').value = abilityMod + prof;
+
+    // Slots summary
+    const s = (lvl)=> `${document.getElementById(`l${lvl}cur`).value||0} / ${document.getElementById(`l${lvl}max`).value||0}`;
+    document.getElementById('slotsSummary').value = `1st: ${s(1)}, 2nd: ${s(2)}, 3rd: ${s(3)}, 4th: ${s(4)}`;
+
+    // Autosave
+    saveToStorage();
+  }
+
+  function addAttack(){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><input></td><td><input></td><td><input></td><td><input></td><td><button class="btn" onclick="delRow(this)">−</button></td>`;
+    document.querySelector('#attacks tbody').appendChild(tr);
+  }
+  function addSpell(){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><input></td><td><input type="number" min="0" value="1"></td><td><input></td><td><button class="btn" onclick="delRow(this)">−</button></td>`;
+    document.querySelector('#spells tbody').appendChild(tr);
+  }
+  function delRow(btn){ btn.closest('tr').remove(); saveToStorage(); }
+
+  // --- Storage ---
+  const KEY = 'aoi-sheet-v1';
+  function serialize(){
+    const data = {};
+    data.prof = document.getElementById('prof').value;
+    data.insp = document.getElementById('insp').value;
+    data.langs = document.getElementById('langs').value;
+    data.ac = document.getElementById('ac').value;
+    data.speed = document.getElementById('speed').value;
+    data.hpmax = document.getElementById('hpmax').value;
+    data.hp = document.getElementById('hp').value;
+    data.thp = document.getElementById('thp').value;
+    data.hd = document.getElementById('hd').value;
+    data.dsS = [...document.querySelectorAll('.ds-s')].map(c=>c.checked);
+    data.dsF = [...document.querySelectorAll('.ds-f')].map(c=>c.checked);
+    data.abilities = {};
+    document.querySelectorAll('#abilities .ability').forEach(box=>{
+      const ab = box.dataset.ability;
+      data.abilities[ab] = {
+        score: box.querySelector('.score input').value,
+        saveProf: box.querySelector('.save-prof').checked
+      };
+    });
+    data.skills = {};
+    document.querySelectorAll('#skills [data-skill]').forEach(cb=>{ data.skills[cb.dataset.skill]=cb.checked; });
+    data.attacks = [...document.querySelectorAll('#attacks tbody tr')].map(tr=>[...tr.querySelectorAll('input')].map(i=>i.value));
+    data.spells = [...document.querySelectorAll('#spells tbody tr')].map(tr=>[...tr.querySelectorAll('input')].map(i=>i.value));
+    data.features = document.getElementById('features').value;
+    data.equip = document.getElementById('equip').value;
+    data.profs = document.getElementById('profs').value;
+    data.personality = document.getElementById('personality').value;
+    data.ideals = document.getElementById('ideals').value;
+    data.bonds = document.getElementById('bonds').value;
+    data.flaws = document.getElementById('flaws').value;
+    data.backstory = document.getElementById('backstory').value;
+    data.spellAbility = document.getElementById('spellAbility').value;
+    data.slots = {
+      l1cur: l1cur.value, l1max: l1max.value,
+      l2cur: l2cur.value, l2max: l2max.value,
+      l3cur: l3cur.value, l3max: l3max.value,
+      l4cur: l4cur.value, l4max: l4max.value
+    };
+    data.pet = {
+      ac: pet-ac.value, hp: pet-hp.value, speed: pet-speed.value, skills: pet-skills.value,
+      traits: document.getElementById('pet-traits').value,
+      attack: document.getElementById('pet-attack').value
+    };
+    return data;
+  }
+  function deserialize(data){
+    if(!data) return;
+    document.getElementById('prof').value = data.prof||3;
+    document.getElementById('insp').value = data.insp||'';
+    document.getElementById('langs').value = data.langs||'Common, Elvish, Sylvan';
+    ['ac','speed','hpmax','hp','thp','hd'].forEach(id=>{ if(data[id]!==undefined) document.getElementById(id).value = data[id]; });
+    document.querySelectorAll('.ds-s').forEach((c,i)=> c.checked = (data.dsS||[])[i]||false);
+    document.querySelectorAll('.ds-f').forEach((c,i)=> c.checked = (data.dsF||[])[i]||false);
+
+    if(data.abilities){
+      for(const [ab, obj] of Object.entries(data.abilities)){
+        const box = document.querySelector(`[data-ability="${ab}"]`);
+        if(!box) continue;
+        box.querySelector('.score input').value = obj.score||10;
+        box.querySelector('.save-prof').checked = !!obj.saveProf;
+      }
+    }
+    if(data.skills){
+      for(const [k,v] of Object.entries(data.skills)){
+        const cb = document.querySelector(`#skills [data-skill="${k}"]`);
+        if(cb) cb.checked = !!v;
+      }
+    }
+    if(Array.isArray(data.attacks)){
+      const body = document.querySelector('#attacks tbody');
+      body.innerHTML = '';
+      data.attacks.forEach(row=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><input value="${row[0]||''}"></td><td><input value="${row[1]||''}"></td><td><input value="${row[2]||''}"></td><td><input value="${row[3]||''}"></td><td><button class=btn onclick=delRow(this)>−</button></td>`;
+        body.appendChild(tr);
+      });
+    }
+    if(Array.isArray(data.spells)){
+      const body = document.querySelector('#spells tbody');
+      body.innerHTML = '';
+      data.spells.forEach(row=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><input value="${row[0]||''}"></td><td><input type=number min=0 value="${row[1]||''}"></td><td><input value="${row[2]||''}"></td><td><button class=btn onclick=delRow(this)>−</button></td>`;
+        body.appendChild(tr);
+      });
+    }
+    document.getElementById('features').value = data.features||document.getElementById('features').value;
+    document.getElementById('equip').value = data.equip||'';
+    document.getElementById('profs').value = data.profs||'';
+    document.getElementById('personality').value = data.personality||'';
+    document.getElementById('ideals').value = data.ideals||'';
+    document.getElementById('bonds').value = data.bonds||'';
+    document.getElementById('flaws').value = data.flaws||'';
+    document.getElementById('backstory').value = data.backstory||'';
+    document.getElementById('spellAbility').value = data.spellAbility||'WIS';
+    if(data.slots){ for(const k of Object.keys(data.slots)){ const el = document.getElementById(k); if(el) el.value=data.slots[k]; } }
+
+    if(data.pet){
+      document.getElementById('pet-traits').value = data.pet.traits||'';
+      document.getElementById('pet-attack').value = data.pet.attack||'';
+      document.getElementById('pet-ac').value = data.pet.ac||13;
+      document.getElementById('pet-hp').value = data.pet.hp||19;
+      document.getElementById('pet-speed').value = data.pet.speed||'40 ft., climb 40 ft.';
+      document.getElementById('pet-skills').value = data.pet.skills||'Stealth +6, Perception +4';
+    }
+
+    updateAll();
+  }
+  function saveToStorage(){ try{ localStorage.setItem(KEY, JSON.stringify(serialize())); }catch(e){} }
+  function loadFromStorage(){ try{ const raw = localStorage.getItem(KEY); if(raw) deserialize(JSON.parse(raw)); else updateAll(); }catch(e){ updateAll(); } }
+
+  // Export / Import
+  document.getElementById('exportBtn').addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(serialize(),null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'aoi-staryx-sheet.json'; a.click();
+    URL.revokeObjectURL(url);
+  });
+  document.getElementById('importFile').addEventListener('change', (e)=>{
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => { try{ deserialize(JSON.parse(reader.result)); saveToStorage(); }catch(err){ alert('Invalid JSON'); } };
+    reader.readAsText(file);
+  });
+
+  // Live listeners
+  document.addEventListener('input', (e)=>{
+    if(e.target.matches('input,select,textarea')) updateAll();
+  });
+
+  // Init
+  loadFromStorage();
+</script>
 </body>
 </html>
